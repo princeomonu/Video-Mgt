@@ -10,6 +10,7 @@
 <body class="bg-gray-900 text-white text-center p-5">
     <h1 class="text-4xl my-5 font-bold" >This is a video manager</h1>
 
+    <!-- form -->
     <form action="/upload" method="post" enctype="multipart/form-data">
         <div class="my-5">
             <input class="p-3 text-black" name="title" type="text" placeholder="enter title">
@@ -21,6 +22,17 @@
             <button class="px-4 py-2 rounded bg-white text-black " type="submit"  >Save</button>
         </div>
     </form>
+
+    <!-- list of videos -->
+    <h2 class="font-bold text-4xl  underline mt-10">Videos</h2>
+
+    <% videos.forEach(function(video){ %>
+
+        <div class="bg-gray-500/50 p-4 rounded my-4 cursor-pointer hover:underline">
+            <h3 class="text-yellow-400 font-bold"><%=video.title %> </h3>
+        </div>
+        
+    <% }); %>
 
 </body>
 </html>

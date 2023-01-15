@@ -1,8 +1,19 @@
 import express from 'express'
 import fileUpload from 'express-fileupload'
-import fs from 'fs'
-import dbconfig from './client/dbconfig.js'
+import Db from 'simple-mongo-client'
 import { saveFile } from './util.js'
+import ejs from 'ejs'
+import { fstat } from 'fs'
+import { readFile } from 'fs/promises'
+import {join} from 'path'
+
+
+const videosDb = async ()=>{
+    return  await Db.connect('videos',{
+        database:'MyData',
+        mongoURL:'mongodb://localhost:27018',
+    })
+}
 
 
 
@@ -10,6 +21,22 @@ const app = express()
 
 // body parser
 app.use(express.json())
+app.use(async (req,res,next)=>{
+    if(req.url=="/"){
+        // get all our vides
+        const db = await videosDb()
+        const videos = (await db.getAll()).data
+        // render the html with the videos
+        const filePath = join(process.cwd(),'client/index.ejs')
+        const file =  await readFile(filePath)
+
+        let html = ejs.render(file.toString(), {videos: videos});
+
+        res.setHeader('content-type','text/html')
+        res.send(html)
+    }
+    else next()
+})
 app.use(express.static('client'))
 app.use(fileUpload({}))
 
@@ -34,20 +61,29 @@ app.post("/upload",async (req,res)=>{
     await saveFile(id,ext,file.data)
 
     // save the info to db
-    const db = await dbconfig()
-    const coll = db.collection('videos')
-    const saved = await coll.insertOne({
+    const db = await videosDb()
+    const saved = await db.save({
         title,
         file: `${id}.${ext}`
     })
 
-    if(saved.insertedId) res.redirect('/thank-you.html')
+    if(saved.success) res.redirect('/thank-you.html')
     else res.status(500).end('something went wrong!')
 })
 
 
 // list all videos
-app.get("/all",(req,res)=>{
+app.get("/all",async (req,res)=>{
+    try {
+        console.log('new req:all')
+        // save the info to db
+        const db = await videosDb()
+        const all = await db.getAll()
+        res.send(all.data)
+    } catch (error) {
+        res.status(500).end('something went wrong in the universe')
+    }
+
 })
 
 // stream video
