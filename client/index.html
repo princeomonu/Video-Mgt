@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white text-center p-5">
+    <h1 class="text-4xl my-5 font-bold" >This is a video manager</h1>
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <div class="my-5">
+            <input class="p-3 text-black" name="title" type="text" placeholder="enter title">
+        </div>
+        <div class="my-10">
+            <input type="file" name="video" id="video" accept="video/mp4">
+        </div>
+        <div class="my-5">
+            <button class="px-4 py-2 rounded bg-white text-black " type="submit"  >Save</button>
+        </div>
+    </form>
+
+</body>
+</html>
