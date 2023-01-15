@@ -21,26 +21,19 @@ const app = express()
 
 // body parser
 app.use(express.json())
-app.use(async (req,res,next)=>{
-    if(req.url=="/"){
-        // get all our vides
-        const db = await videosDb()
-        const videos = (await db.getAll()).data
-        // render the html with the videos
-        const filePath = join(process.cwd(),'client/index.ejs')
-        const file =  await readFile(filePath)
-
-        let html = ejs.render(file.toString(), {videos: videos});
-
-        res.setHeader('content-type','text/html')
-        res.send(html)
-    }
-    else next()
-})
 app.use(express.static('client'))
 app.use(fileUpload({}))
 
+app.set('view engine','ejs')
 
+
+app.get('/',async (req,res)=>{
+    console.log('new req:/')
+    // get all our vides
+    const db = await videosDb()
+    const videos = (await db.getAll()).data
+    res.render('index',{videos})
+})
 // upload video
 app.post("/upload",async (req,res)=>{
 
