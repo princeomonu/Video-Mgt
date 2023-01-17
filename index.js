@@ -2,10 +2,6 @@ import express from 'express'
 import fileUpload from 'express-fileupload'
 import Db from 'simple-mongo-client'
 import { saveFile } from './util.js'
-import ejs from 'ejs'
-import { fstat } from 'fs'
-import { readFile } from 'fs/promises'
-import {join} from 'path'
 
 
 const videosDb = async ()=>{
@@ -26,7 +22,6 @@ app.use(fileUpload({}))
 
 app.set('view engine','ejs')
 
-
 app.get('/',async (req,res)=>{
     console.log('new req:/')
     // get all our vides
@@ -34,6 +29,7 @@ app.get('/',async (req,res)=>{
     const videos = (await db.getAll()).data
     res.render('index',{videos})
 })
+
 // upload video
 app.post("/upload",async (req,res)=>{
 
