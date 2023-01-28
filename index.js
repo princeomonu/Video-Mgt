@@ -1,7 +1,9 @@
 import express from 'express'
 import fileUpload from 'express-fileupload'
+import { createReadStream } from 'fs'
+import { join } from 'path'
 import Db from 'simple-mongo-client'
-import { saveFile } from './util.js'
+import { fileFolder, saveFile } from './util.js'
 
 
 const videosDb = async ()=>{
@@ -20,13 +22,17 @@ app.use(express.json())
 app.use(express.static('client'))
 app.use(fileUpload({}))
 
+// set view engine to ejs
 app.set('view engine','ejs')
 
 app.get('/',async (req,res)=>{
     console.log('new req:/')
-    // get all our vides
+
+    // get all our videos from db
     const db = await videosDb()
     const videos = (await db.getAll()).data
+
+    // render template
     res.render('index',{videos})
 })
 
@@ -76,8 +82,20 @@ app.get("/all",async (req,res)=>{
 })
 
 // stream video
-app.get('/stream/:file',(req,res)=>{
+app.get('/stream/:filename',(req,res)=>{
 
+    // create a readable stream to the file
+    const fileUrl = join(fileFolder,req.params.filename)
+    console.log(`streaming ${fileUrl}...`)
+
+    const fileStream = createReadStream(fileUrl)
+
+    // pipe the stream to our response
+    fileStream.pipe(res)
+
+    fileStream.on('end',()=>{
+        console.log('stream complete')
+    })
 })
 
 // delete video

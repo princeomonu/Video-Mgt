@@ -1,7 +1,7 @@
 import fs, { mkdirSync } from 'fs'
 import { join } from 'path'
 
-const fileFolder = join(process.cwd(),'files')
+export const fileFolder = join(process.cwd(),'files')
 if(!fs.existsSync(fileFolder)) mkdirSync(fileFolder,{recursive:true})
 
 export const saveFile = (id,ext,buffer)=>{

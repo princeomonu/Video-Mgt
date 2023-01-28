@@ -12,11 +12,11 @@
 
     <!-- form -->
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <div class="my-5">
-            <input class="p-3 text-black" name="title" type="text" placeholder="enter title">
-        </div>
         <div class="my-10">
             <input type="file" name="video" id="video" accept="video/mp4">
+        </div>
+        <div class="my-5">
+            <input class="p-3 text-black" name="title" type="text" placeholder="enter title">
         </div>
         <div class="my-5">
             <button class="px-4 py-2 rounded bg-white text-black " type="submit"  >Save</button>
@@ -26,13 +26,23 @@
     <!-- list of videos -->
     <h2 class="font-bold text-4xl  underline mt-10">Videos</h2>
 
-    <% videos.forEach(function(video){ %>
+    <% if (videos.length) { %>
+        <% videos.forEach(function(video){ %>
+    
+            <div class="bg-gray-500/50 p-4 rounded my-4 cursor-pointer flex flex-col items-center">
+                <a target="_blank" href="/stream/<%=video.file%>" class="text-yellow-400 font-bold mx-5 text-lg"><%=video.title %> </a>
+                <video width="320" height="240" controls>
+                    <source src="/stream/<%=video.file%>" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+            </div>
+            
+        <% }); %>
+    <% } else{ %>
+        <div class="text-gray-500 mt-10 italic text-center">no videos yet</div>
+    <% } %>
+     
 
-        <div class="bg-gray-500/50 p-4 rounded my-4 cursor-pointer hover:underline">
-            <h3 class="text-yellow-400 font-bold"><%=video.title %> </h3>
-        </div>
-        
-    <% }); %>
 
 </body>
 </html>
