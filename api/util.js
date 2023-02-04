@@ -14,3 +14,12 @@ export const saveFile = (id,ext,buffer)=>{
         })
     })
 }
+
+export const deleteFile = (filename)=>{
+    return new Promise((resolve, reject)=>{
+        fs.unlink(join(fileFolder,filename),(error)=>{
+            if(error) reject(error)
+            resolve(true)
+        })
+    })
+}
